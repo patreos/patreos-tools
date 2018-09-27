@@ -11,7 +11,7 @@ commons = Commons()
 color = Colors()
 fg = color.fg()
 today = datetime.datetime.now().strftime("%Y-%m-%d")
-today = '2018-08-30'
+#today = '2018-09-19'
 
 def cyan(stmt):
 	return fg.lightcyan + str(stmt) + color.reset
@@ -40,14 +40,24 @@ exchanges = [
 def adjusted_drop_ratio(producers):
 	if int(producers) <= 3:
 		return Decimal(2)
-	if int(producers) >= 30:
+	if(int(producers) > 3 and int(producers) < 15):
+		return Decimal(producers)/30 * drop_ratio * Decimal(math.atan(producers)) / Decimal(math.pi/2) + 1
+	if(int(producers) >=15 and int(producers) < 30):
+		bump = 14
+		return Decimal(bump) + Decimal( (20 - bump) / (30 - 15) ) * Decimal( int(producers) - 15)
+	if int(producers) == 30:
 		return Decimal(20)
-	return Decimal(producers)/30 * drop_ratio * Decimal(math.atan(producers)) / Decimal(math.pi/2) + 1
 
 def adjusted_drop_cap(producers):
-	if int(producers) == 1:
+	if int(producers) <= 3:
 		return Decimal(user_base_cap_eos)
-	return user_base_cap_eos + 150 * user_base_cap_eos * Decimal(math.atan(1/40 * producers)) / Decimal(math.pi/2)
+	if(int(producers) > 3 and int(producers) < 15):
+		return user_base_cap_eos + 50 * user_base_cap_eos * Decimal(math.atan(1/40 * producers)) / Decimal(math.pi/2)
+	if(int(producers) >=15 and int(producers) < 30):
+		bump = 14
+		return user_base_cap_eos + 50 * user_base_cap_eos * Decimal(math.atan(1/40 * producers)) / Decimal(math.pi/2)
+	if int(producers) == 30:
+		return user_base_cap_eos + 50 * user_base_cap_eos * Decimal(math.atan(1/40 * producers)) / Decimal(math.pi/2)
 
 amt = Decimal(0)
 dropped = Decimal(0)

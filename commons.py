@@ -93,3 +93,13 @@ class Commons:
             return tokens
         else:
             raise ValueError("Invalid split attempt to string: %s with character: %s" % (str, char))
+
+
+    def safe_split_limit(self, str, char, tokens_limit):
+        if char in str:
+            tokens = str.split(char, tokens_limit - 1)
+            if len(tokens) != tokens_limit:
+                raise ValueError("Split on string: %s with character: %s did not result in %s tokens" % (str, char, tokens_limit))
+            return tokens
+        else:
+            raise ValueError("Invalid split attempt to string: %s with character: %s" % (str, char))

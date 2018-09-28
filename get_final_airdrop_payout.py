@@ -11,7 +11,7 @@ commons = Commons()
 color = Colors()
 fg = color.fg()
 today = datetime.datetime.now().strftime("%Y-%m-%d")
-#today = '2018-09-19'
+today = '2018-09-27'
 
 def cyan(stmt):
 	return fg.lightcyan + str(stmt) + color.reset
@@ -38,26 +38,28 @@ exchanges = [
 ]
 
 def adjusted_drop_ratio(producers):
+	bump = 14
+	target = 20
 	if int(producers) <= 3:
 		return Decimal(2)
 	if(int(producers) > 3 and int(producers) < 15):
 		return Decimal(producers)/30 * drop_ratio * Decimal(math.atan(producers)) / Decimal(math.pi/2) + 1
 	if(int(producers) >=15 and int(producers) < 30):
-		bump = 14
-		return Decimal(bump) + Decimal( (20 - bump) / (30 - 15) ) * Decimal( int(producers) - 15)
+		return Decimal(bump) + Decimal( (target - bump) / (30 - 15) ) * Decimal( int(producers) - 15)
 	if int(producers) == 30:
-		return Decimal(20)
+		return Decimal(target)
 
 def adjusted_drop_cap(producers):
+	bump = 133000
+	target = 155000
 	if int(producers) <= 3:
 		return Decimal(user_base_cap_eos)
 	if(int(producers) > 3 and int(producers) < 15):
-		return user_base_cap_eos + 50 * user_base_cap_eos * Decimal(math.atan(1/40 * producers)) / Decimal(math.pi/2)
+		return user_base_cap_eos + 40 * user_base_cap_eos * Decimal(math.atan(1/40 * producers)) / Decimal(math.pi/2)
 	if(int(producers) >=15 and int(producers) < 30):
-		bump = 14
-		return user_base_cap_eos + 50 * user_base_cap_eos * Decimal(math.atan(1/40 * producers)) / Decimal(math.pi/2)
+		return Decimal(bump) + Decimal( (target - bump) / (30 - 15) ) * Decimal( int(producers) - 15)
 	if int(producers) == 30:
-		return user_base_cap_eos + 50 * user_base_cap_eos * Decimal(math.atan(1/40 * producers)) / Decimal(math.pi/2)
+		return Decimal(target)
 
 amt = Decimal(0)
 dropped = Decimal(0)
@@ -97,20 +99,20 @@ print(purple("\n**** Airdrop Model Results ****"))
 print("Gathered %s voters" % '{0:,}'.format(voter_number))
 drop_percent = airdrop_supply / total_supply * 100
 print("Dropping %s of %s (%s Percent)" % (cyan('{0:,}'.format(airdrop_supply) + ' PTR'), cyan('{0:,}'.format(total_supply) + ' PTR'), '{0:,}'.format(drop_percent)))
-print("Aggregate total balance of %s EOS (cap of %s) for all %s voters" % (amt, '{0:,}'.format(user_base_cap_eos), '{0:,}'.format(voter_number)))
+print("Aggregate total balance of %s EOS for all %s voters" % (amt, '{0:,}'.format(voter_number)))
 
 total_drop = Decimal('{0:.4f}'.format(dropped))
 print("Total airdrop ammount of %s accross all %s voters" % (cyan('{0:,}'.format(total_drop) + ' PTR'), '{0:,}'.format(voter_number)))
 drop = airdrop_supply / amt
 print("Estimated drop rate is %s to 1 EOS" % (cyan('{0:.4f}'.format(drop) + ' PTR')))
 avg_eos = amt / voter_number
-print("Average balance of %s EOS (cap of %s) per %s voters" % ('{0:.4f}'.format(avg_eos), '{0:,}'.format(user_base_cap_eos), '{0:,}'.format(voter_number)))
+print("Average balance of %s EOS per %s voters" % ('{0:.4f}'.format(avg_eos), '{0:,}'.format(voter_number)))
 avg_ptr = drop * avg_eos
-print("Average drop balance of %s (cap of %s) per %s voters" % (cyan('{0:.4f}'.format(avg_ptr) + ' PTR'), '{0:,}'.format(user_base_cap_eos), '{0:,}'.format(voter_number)))
+print("Average drop balance of %s per %s voters" % (cyan('{0:.4f}'.format(avg_ptr) + ' PTR'), '{0:,}'.format(voter_number)))
 
 median = amounts[int(len(amounts) / 2)]
-print("Median balance of %s EOS (cap of %s) per %s voters" % ('{0:.4f}'.format(median), '{0:,}'.format(user_base_cap_eos), '{0:,}'.format(voter_number)))
-print("Median drop balance of %s (cap of %s) per %s voters" % (cyan('{0:.4f}'.format(drop * median) + ' PTR'), '{0:,}'.format(user_base_cap_eos), '{0:,}'.format(voter_number)))
+print("Median balance of %s EOS per %s voters" % ('{0:.4f}'.format(median), '{0:,}'.format(voter_number)))
+print("Median drop balance of %s per %s voters" % (cyan('{0:.4f}'.format(drop * median) + ' PTR'), '{0:,}'.format(voter_number)))
 ram_needed = ram_per_account_kb * voter_number
 eos_needed = ram_per_account_kb * voter_number * ram_cost_eos_per_kb
 print("Estimated %s of RAM needed, %s EOS at market rate of %s EOS/kb" % (yellow('{0:.2f}'.format(ram_needed) + ' kb'), '{0:.4f}'.format(eos_needed), str(ram_cost_eos_per_kb)))

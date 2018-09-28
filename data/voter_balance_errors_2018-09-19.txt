@@ -1,3 +1,0 @@
-ac.eos,1
-delegate.eos,1
-eos,1

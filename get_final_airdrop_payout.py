@@ -24,11 +24,10 @@ def yellow(stmt):
 
 total_supply = Decimal(2000000000)
 airdrop_supply = Decimal(1200000000)
-drop_ratio = Decimal(20)
-drop_cap_mod = Decimal(3/5)
+max_drop_ratio = Decimal(20)
 user_base_cap_eos = 10000
 #voter_number = 23890
-ram_cost_eos_per_kb = 0.11777814
+ram_cost_eos_per_kb = 0.1195
 ram_per_account_kb = 0.23
 amounts = []
 exchanges = [
@@ -43,7 +42,7 @@ def adjusted_drop_ratio(producers):
 	if int(producers) <= 3:
 		return Decimal(2)
 	if(int(producers) > 3 and int(producers) < 15):
-		return Decimal(producers)/30 * drop_ratio * Decimal(math.atan(producers)) / Decimal(math.pi/2) + 1
+		return Decimal(producers)/30 * max_drop_ratio * Decimal(math.atan(producers)) / Decimal(math.pi/2) + 1
 	if(int(producers) >=15 and int(producers) < 30):
 		return Decimal(bump) + Decimal( (target - bump) / (30 - 15) ) * Decimal( int(producers) - 15)
 	if int(producers) == 30:

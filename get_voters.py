@@ -28,15 +28,15 @@ while user != old_user:
 
 	old_user = user
 	for row in json_result['rows']:
-		if not row['owner'].isdigit():
-			user = row['owner']
+		user = row['owner']
+		if(user == old_user):
+			continue;
+
+		if debug:
+			pprint('%s,%s' % (row['owner'], len(row['producers'])))
+
 		if len(row['producers']) > 0:
-			if debug:
-				pprint('%s,%s' % (row['owner'], len(row['producers'])))
 			f.write('%s,%s\n' % (row['owner'], len(row['producers']) ))
-		else:
-			if debug:
-				pprint('%s,%s' % (row['owner'], len(row['producers'])))
 
 	if user == old_user:
 		print("Done")

@@ -11,7 +11,10 @@ commons = Commons()
 color = Colors()
 fg = color.fg()
 today = datetime.datetime.now().strftime("%Y-%m-%d")
-today = '2018-09-27'
+today = '2018-10-01'
+
+# user,producer_num,balance
+output_results_file = './data/airdrop_results_%s.txt' % today
 
 def cyan(stmt):
 	return fg.lightcyan + str(stmt) + color.reset
@@ -36,8 +39,12 @@ exchanges = [
 	"ha2tmmjygige" #chaince
 ]
 
+backlist = [
+
+]
+
 def adjusted_drop_ratio(producers):
-	bump = 14
+	bump = 16
 	target = 20
 	if int(producers) <= 3:
 		return Decimal(2)
@@ -49,8 +56,8 @@ def adjusted_drop_ratio(producers):
 		return Decimal(target)
 
 def adjusted_drop_cap(producers):
-	bump = 133000
-	target = 155000
+	bump = 115139
+	target = 132000
 	if int(producers) <= 3:
 		return Decimal(user_base_cap_eos)
 	if(int(producers) > 3 and int(producers) < 15):
@@ -63,6 +70,7 @@ def adjusted_drop_cap(producers):
 amt = Decimal(0)
 dropped = Decimal(0)
 voter_number = 0
+p = open(output_results_file, 'a')
 with open('./data/voter_balances_%s.txt' % today, 'r') as f:
 	for line in f:
 		line = line.rstrip()
@@ -72,8 +80,15 @@ with open('./data/voter_balances_%s.txt' % today, 'r') as f:
 		#print(user_balance)
 		tokens = commons.safe_split(line, ',', 3)
 		user = tokens[0]
+		if user.startswith("eosio."):
+			print("Skipping account: %s" % user)
+			continue;
 		producers = tokens[1]
 		balance = tokens[2]
+
+		if Decimal(balance) == Decimal("0.0000"):
+			print("Skipping account: %s due to 0 balance" % user)
+			continue;
 
 		user_cap_eos = adjusted_drop_cap(int(producers))
 		if Decimal(balance) > Decimal(user_cap_eos):
@@ -82,9 +97,12 @@ with open('./data/voter_balances_%s.txt' % today, 'r') as f:
 			else:
 				print("Exchange %s with %s EOS" % (user, balance))
 		amt = amt + Decimal(balance)
-		dropped = dropped + Decimal(balance) * adjusted_drop_ratio(int(producers))
+		user_drop = Decimal(balance) * adjusted_drop_ratio(int(producers))
+		dropped = dropped + user_drop
 		amounts.append(Decimal(balance))
 		voter_number = voter_number + 1
+
+		p.write('%s,%s\n' % (user, '{0:.4f}'.format(user_drop)) )
 
 amounts = sorted(amounts)
 for i in range(30):

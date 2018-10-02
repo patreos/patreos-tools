@@ -9,17 +9,21 @@ from command_builder import CommandBuilder
 commons = Commons()
 command_builder = CommandBuilder()
 today = datetime.datetime.now().strftime("%Y-%m-%d")
-today = '2018-09-27'
+today = '2018-10-01'
 
+# time,account,balance
 input_snapshot_file = './data/%s_account_snapshot.csv' % today
 
+# user,producer_num,balance
 output_results_file = './data/voter_balances_%s.txt' % today
 p = open(output_results_file, 'a')
 
+# user,producer_num
 output_balance_errors_file = './data/voter_balance_errors_%s.txt' % today
 e = open(output_balance_errors_file, 'a')
 
-input_accounts_file = './data/voters-%s.csv' % today
+# account,staked,producers
+input_accounts_file = './data/voters%s.csv' % today
 #input_accounts_file = './data/missing_users_2018-08-13.txt'
 
 with open(input_accounts_file, 'r') as f:
@@ -45,8 +49,8 @@ with open(input_accounts_file, 'r') as f:
 			print("No user found when splitting: `%s`" % line, file=sys.stderr)
 			continue
 
-		cmd = command_builder.grep(user, input_snapshot_file)
-		snapshot_line = commons.cmd_exec(cmd)
+		cmd = command_builder.grep(",%s," % user, input_snapshot_file)
+		snapshot_line = commons.cmd_exec(cmd) #time,account,balance
 		if commons.is_blank(snapshot_line):
 			print("Problem with cmd: `%s`" % (' '.join(cmd)), file=sys.stderr)
 			e.write('%s,%s\n' % (user, producers))

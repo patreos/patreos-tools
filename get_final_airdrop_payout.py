@@ -11,7 +11,7 @@ commons = Commons()
 color = Colors()
 fg = color.fg()
 today = datetime.datetime.now().strftime("%Y-%m-%d")
-today = '2018-10-01'
+today = '2018-09-19'
 
 # user,producer_num,balance
 output_results_file = './data/airdrop_results_%s.txt' % today
@@ -30,7 +30,7 @@ airdrop_supply = Decimal(1200000000)
 max_drop_ratio = Decimal(20)
 user_base_cap_eos = 10000
 #voter_number = 23890
-ram_cost_eos_per_kb = 0.1195
+ram_cost_eos_per_kb = 0.062
 ram_per_account_kb = 0.23
 amounts = []
 exchanges = [

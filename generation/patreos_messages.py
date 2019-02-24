@@ -3,7 +3,7 @@
 messages = {
     "NO_BALANCE_OBJECT": "No balance object found",
     "CANNOT_BLURB_TO_SELF": "cannot blurb to self",
-    "TO_ACCCOUNT_DNE": "to account does not exist",
+    "TO_ACCOUNT_DNE": "to account does not exist",
     "CREATOR_ACCOUNT_DNE": "Creator account does not exist",
     "PLEDGE_EXISTS": "Pledge already exists.",
     "UNSUPPORTED_TOKEN": "We do not support this token currently",
